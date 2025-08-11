@@ -9,7 +9,7 @@ SMODS.Joker {
     pos = { x = 1, y = 0 },
     discovered = true,
 
-    --society if create_card had an options field
+    --i found the better way to do this
     -- there is probably a better way to do this but i just copied the joker code for expansion pack joker from more fluff
     calculate = function(self, card, context)
         if context.setting_blind and not card.getting_sliced and 
@@ -47,42 +47,27 @@ SMODS.Joker {
                 "j_cartomancer", "j_astronomer", "j_burnt", "j_bootstraps", "j_caino",
                 "j_triboulet", "j_yorick", "j_chicot", "j_perkeo"
             }
-            
-            local function temp_ban_joker(key)
-                if not G.GAME.banned_keys[key] then
-                    G.GAME.banned_keys[key] = 214389
-                elseif G.GAME.banned_keys[key] == true then
-                    G.GAME.banned_keys[key] = 214389
-                elseif G.GAME.banned_keys[key] % 214389 == 0 then
-                    G.GAME.banned_keys[key] = G.GAME.banned_keys[key] + 214389
+            local modded_jokers = {}
+
+            for _, joker in pairs(G.P_CENTER_POOLS.Joker) do
+                if joker.in_pool and type(joker.in_pool) == "function" then
+                    if joker:in_pool() then
+                        local valid = true
+                        for _, key in ipairs(vanilla_jokers) do
+                            if key == joker.key then valid = false end
+                        end
+                        if valid == true then modded_jokers[#modded_jokers+1] = joker.key end
+                    end
                 end
             end
-            
-            local function temp_unban_joker(key)
-                if G.GAME.banned_keys[key] == 214389 then
-                    G.GAME.banned_keys[key] = nil
-                elseif G.GAME.banned_keys[key] and G.GAME.banned_keys[key] % 214389 == 0 then
-                    G.GAME.banned_keys[key] = G.GAME.banned_keys[key] - 214389
-                end
-            end
-            
-            for i = 1, #vanilla_jokers do
-                temp_ban_joker(vanilla_jokers[i])
-            end
-            
+
             G.E_MANAGER:add_event(Event({
                 func = function()
                     for i = 1, jokers_to_create do
-                        local new_card = create_card('Joker', G.jokers, nil, nil, nil, nil, nil, 'expansion')
-                        new_card:add_to_deck()
-                        G.jokers:emplace(new_card)
-                        new_card:start_materialize()
+                        local to_create = pseudorandom_element(modded_jokers, 'jokerforge')
+                        SMODS.create_card({ set = "Joker", key = "to_create" })
                     end
                     G.GAME.joker_buffer = 0
-                    
-                    for i = 1, #vanilla_jokers do
-                        temp_unban_joker(vanilla_jokers[i])
-                    end
                     return true
                 end
             }))
