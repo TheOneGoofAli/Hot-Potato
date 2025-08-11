@@ -1,7 +1,6 @@
-
 SMODS.Joker {
     key = "joker_forge",
-    config = { extra = 1},
+    config = { extra = 1 },
     blueprint_compat = true,
     rarity = 2,
     cost = 6,
@@ -12,13 +11,12 @@ SMODS.Joker {
     --i found the better way to do this
     -- there is probably a better way to do this but i just copied the joker code for expansion pack joker from more fluff
     calculate = function(self, card, context)
-        if context.setting_blind and not card.getting_sliced and 
-           #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
-            
-            local jokers_to_create = math.min(card.ability.extra, 
+        if context.setting_blind and not card.getting_sliced and
+            #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
+            local jokers_to_create = math.min(card.ability.extra,
                 G.jokers.config.card_limit - (#G.jokers.cards + G.GAME.joker_buffer))
             G.GAME.joker_buffer = G.GAME.joker_buffer + jokers_to_create
-            
+
             local vanilla_jokers = {
                 "j_joker", "j_jolly", "j_greedy_joker", "j_lusty_joker", "j_wrathful_joker", "j_gluttenous_joker",
                 "j_zany", "j_mad", "j_crazy", "j_droll", "j_sly", "j_wily", "j_clever", "j_devious",
@@ -56,33 +54,35 @@ SMODS.Joker {
                         for _, key in ipairs(vanilla_jokers) do
                             if key == joker.key then valid = false end
                         end
-                        if valid == true then modded_jokers[#modded_jokers+1] = joker.key end
+                        if valid == true then modded_jokers[#modded_jokers + 1] = joker.key end
                     end
                 end
             end
 
-            G.E_MANAGER:add_event(Event({
-                func = function()
-                    for i = 1, jokers_to_create do
-                        local to_create = pseudorandom_element(modded_jokers, 'jokerforge')
-                        SMODS.create_card({ set = "Joker", key = "to_create" })
+            if #modded_jokers > 0 then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        for i = 1, jokers_to_create do
+                            local to_create = pseudorandom_element(modded_jokers, 'jokerforge')
+                            SMODS.create_card({ set = "Joker", key = "to_create" })
+                        end
+                        G.GAME.joker_buffer = 0
+                        return true
                     end
-                    G.GAME.joker_buffer = 0
-                    return true
-                end
-            }))
-            
-            card_eval_status_text(card, 'extra', nil, nil, nil, {
-                message = localize('k_plus_joker'), 
-                colour = G.C.BLUE
-            })
+                }))
+
+                card_eval_status_text(card, 'extra', nil, nil, nil, {
+                    message = localize('k_plus_joker'),
+                    colour = G.C.BLUE
+                })
+            end
         end
     end,
 
     hotpot_credits = {
-        art = {"Jaydchw (TEMP)"},
-        code = {"Jaydchw"},
-        team = {"Sillyposting"}
+        art = { "Jaydchw (TEMP)" },
+        code = { "Jaydchw" },
+        team = { "Sillyposting" }
     },
 
 }
