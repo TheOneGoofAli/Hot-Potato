@@ -43,3 +43,41 @@ function change_max_highlight(amount) --modifies the max_highlighted_mod variabl
 end
 
 --#endregion
+
+--ease_dollars for keys
+function ease_keys(keys)
+  local function _mod(mod)
+        local dollar_UI = G.HUD:get_UIE_by_ID('keys_text_UI')
+        mod = mod or 0
+        local text = '+$'
+        local col = G.C.MONEY
+        if mod < 0 then
+            text = '-$'
+            col = G.C.RED
+        end
+
+        G.GAME.keys = G.GAME.keys + keys
+    
+        dollar_UI.config.object:update()
+        G.HUD:recalculate()
+        update_gacha_button()
+        --Popup text next to the chips in UI showing number of chips gained/lost
+        attention_text({
+          text = text..tostring(math.abs(mod)),
+          scale = 0.8, 
+          hold = 0.7,
+          cover = dollar_UI.parent,
+          cover_colour = col,
+          align = 'cm'
+          })
+        --Play a chip sound
+        play_sound('coin1')
+    end
+    G.E_MANAGER:add_event(Event({
+        trigger = 'immediate',
+        func = function()
+            _mod(keys)
+            return true
+        end
+    }))
+end

@@ -1,0 +1,51 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+    
+# Game:update
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+position = 'before'
+pattern = '''    local shop_sign = AnimatedSprite(0,0, 4.4, 2.2, G.ANIMATION_ATLAS['shop_sign'])
+    shop_sign:define_draw_steps({
+      {shader = 'dissolve', shadow_height = 0.05},
+      {shader = 'dissolve'}
+    })
+'''
+payload = '''
+    hpot_create_gacha()
+    G.gacha_button = UIBox({
+        definition = G.UIDEF.gacha_button(),
+        config = {type = "cm"}
+    })
+'''
+match_indent = true
+
+# Remove gacha when closing the run and what not
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+position = 'after'
+pattern = '''if self.shop then self.shop:remove(); self.shop = nil end'''
+payload = '''
+if self.gacha_button then self.gacha_button:remove(); self.gacha_button = nil end
+if self.gacha_machine then self.gacha_machine:remove(); self.gacha_machine = nil end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+position = 'after'
+pattern = '''G.shop = nil'''
+payload = '''
+if G.gacha_button then
+  G.gacha_button:remove()
+end
+if G.gacha_machine then
+  G.gacha_machine:remove()
+end
+'''
+match_indent = true

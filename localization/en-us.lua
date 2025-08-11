@@ -553,6 +553,7 @@ return {
         },
         v_dictionary = {
             hotpot_plincoins_cashout = 'Plincoins (#1# per round)',
+            hotpot_keys_cashout = 'Keys (#1# per round)',
             hotpot_art = { "Art: #1#" },
             hotpot_code = { "Code: #1#" },
             hotpot_idea = { "Idea: #1#" },

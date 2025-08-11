@@ -106,7 +106,7 @@ function add_round_eval_plincoins(config)
                         local r = {n=G.UIT.T, config={text = localize('$'), font = SMODS.Fonts.hpot_plincoin, colour = G.C.MONEY, scale = ((num_dollars > 20 and 0.28) or (num_dollars > 9 and 0.43) or 0.58), shadow = true, hover = true, can_collide = false, juice = true}}
                         play_sound('coin3', 0.9+0.2*math.random(), 0.7 - (num_dollars > 20 and 0.2 or 0))
                         
-                        if config.name == 'blind1' then 
+                        if config.name == 'blind1' then
                             G.GAME.current_round.dollars_to_be_earned = G.GAME.current_round.dollars_to_be_earned:sub(2)
                         end
 
@@ -117,7 +117,6 @@ function add_round_eval_plincoins(config)
                 }))
             end
         end
-
       -- might cause issues. Dollars cashout adds up everything and sends "bottom" cashout. Might need similar implementation if more plincoin cashouts are added
       G.GAME.current_round.plincoins = G.GAME.current_round.plincoins + config.plincoins
 

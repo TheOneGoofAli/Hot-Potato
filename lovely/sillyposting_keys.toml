@@ -1,0 +1,43 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Add keys on cashout
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+position = 'before'
+pattern = '''
+add_round_eval_row({name = 'bottom', dollars = dollars})'''
+payload = '''
+if G.GAME.keys_per_round and G.GAME.keys_per_round > 0 then
+  -- Add Keys
+  add_round_eval_keys({name='keys', pitch = pitch, keys = G.GAME.keys_per_round})
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+position = 'after'
+pattern = '''self.GAME = saveTable and saveTable.GAME or self:init_game_object()'''
+payload = '''
+init_keys(self.GAME)
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+position = 'after'
+pattern = '''
+ease_dollars(G.GAME.current_round.dollars)'''
+payload = '''
+--
+ease_keys(G.GAME.current_round.keys)
+G.GAME.current_round.keys = 0
+--
+'''
+match_indent = true
