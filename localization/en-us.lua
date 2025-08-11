@@ -540,6 +540,7 @@ return {
             k_bottlecap = 'Bottlecap',
             b_key_cards = "Keys",
             k_key = "Key",
+            k_plus_modded = "+1 Modded",
 
             hotpot_plinko_play = "Play",
             hotpot_plinko_to_shop1 = "Back to",
