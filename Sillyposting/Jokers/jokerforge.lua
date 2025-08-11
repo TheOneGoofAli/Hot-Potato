@@ -71,10 +71,10 @@ SMODS.Joker {
                     end
                 }))
 
-                card_eval_status_text(card, 'extra', nil, nil, nil, {
-                    message = localize('k_plus_modded'),
-                    colour = G.C.DARK_EDITION
-                })
+                return {
+                    message = "k_plus_modded",
+                    colour = "G.C.DARK_EDITION"
+                }
             end
         end
     end,
