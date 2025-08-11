@@ -62,9 +62,9 @@ SMODS.Joker {
             if #modded_jokers > 0 then
                 G.E_MANAGER:add_event(Event({
                     func = function()
-                        for i = 1, jokers_to_create do
+                        for _ = 1, jokers_to_create do
                             local to_create = pseudorandom_element(modded_jokers, 'jokerforge')
-                            SMODS.add_card({ set = "Joker", key = "to_create", edition = poll_edition('jokerforge', nil, nil, true), key_append = 'jokerforge', area = G.jokers })
+                            SMODS.add_card({ set = "Joker", key = to_create, edition = poll_edition('jokerforge', nil, nil, true), key_append = 'jokerforge', area = G.jokers })
                         end
                         G.GAME.joker_buffer = 0
                         return true
