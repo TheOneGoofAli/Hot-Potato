@@ -389,7 +389,8 @@ return {
                 name = 'Joker Forge',
                 text = {
                     "When {C:attention}Blind{} is selected,",
-                    "Create a {C:attention}Modded{} Joker",
+                    "create a {C:attention}Modded{} Joker",
+                    "with a random {C:dark_edition}Edition{}"
                 }
             }
         },

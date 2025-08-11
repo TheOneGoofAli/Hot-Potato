@@ -81,7 +81,7 @@ SMODS.Joker {
 
     hotpot_credits = {
         art = { "Jaydchw (TEMP)" },
-        code = { "Jaydchw" },
+        code = { "Jaydchw", "Eris" },
         team = { "Sillyposting" }
     },
 
