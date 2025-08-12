@@ -10,6 +10,87 @@ hpot_can_gamble = function()
     return not next(SMODS.find_card("j_cavendish"))
 end
 
+--[[G.UIDEF.gacha_button = function()
+    local t = UIBox{
+        definition = {
+            n = G.UIT.ROOT,
+            config = {
+                align = 'cm',
+                colour = G.C.CLEAR,
+                minw = G.deck.T.w,
+                minh = 1.2
+            },
+            nodes = {{
+                n = G.UIT.O,
+                config = {
+                    object = G.UIDEF.gacha_button_inside(),
+                    id = "gacha_button_real"
+                }
+            }}
+        },
+	    config = {
+            major = G.deck,
+            align = 'tm',
+            offset = { x = 0.15, y = -0.35 },
+            bond = 'Weak',
+            colour = G.C.CLEAR
+        }
+    }
+    return t
+end
+
+G.UIDEF.gacha_button_inside = function()
+    return UIBox{
+        definition = {
+            n = G.UIT.ROOT,
+            config = {
+                align = 'bm',
+                colour = G.C.CLEAR,
+                minw = G.deck.T.w,
+                minh = 1.2
+            },
+            nodes = {{
+                n = G.UIT.R,
+                nodes = {{
+                    n = G.UIT.C,
+                    config = {
+                        align = "tm",
+                        minw = 2,
+                        minh = 1.2,
+                        padding = 0.1,
+                        r = 0.1,
+                        hover = true,
+                        colour = G.C.UI.BACKGROUND_DARK,
+                        shadow = true,
+                        button = "hpot_open_gacha",
+                        func = "hpot_can_gacha"
+                    },
+                    nodes = {{
+                        n = G.UIT.R,
+                        config = {
+                            align = "bm",
+                            padding = 0,
+                            colour = G.C.CLEAR
+                        },
+                        nodes = {{
+                            n = G.UIT.T,
+                            config = {
+                                text = "Gamble\n1 Key",
+                                scale = 0.5,
+                                colour = G.C.UI.TEXT_LIGHT}
+			            }}
+                    }}
+                }}
+            }}
+        },
+        config = {
+            major = G.deck,
+            align = 'tm',
+            offset = { x = 0, y = 0 },
+            bond = 'Weak',
+            colour = G.C.CLEAR
+        }}
+end]]--
 G.UIDEF.gacha_button = function()
     local t = UIBox{definition = {n = G.UIT.ROOT, config = { align = 'cm', colour = G.C.CLEAR, minw = G.deck.T.w, minh = 1.2 }, nodes = {
 		{ n = G.UIT.R, nodes = {{n = G.UIT.C, config = {align = "tm", minw = 2, minh = 1.2, padding = 0.1, r = 0.1, hover = true, colour = G.C.UI.BACKGROUND_DARK, shadow = true, button = "hpot_open_gacha", func = "hpot_can_gacha"}, nodes = {
@@ -19,6 +100,13 @@ G.UIDEF.gacha_button = function()
 			}},
 		}}}}}},
 	config = {major = G.deck, align = 'tm', offset = { x = 0.15, y = -0.35 }, bond = 'Weak', colour = G.C.CLEAR}}
+    return t
+end
+
+G.UIDEF.gacha_machine = function(pos)
+    local t = UIBox{definition = {n = G.UIT.ROOT, config = { align = 'cm', colour = G.C.CLEAR, minw = G.deck.T.w, minh = 1.2 }, nodes = {
+		{ n = G.UIT.O, config = {object = Sprite(0,0,2.84,3.8,G.ASSET_ATLAS["hpot_GachaMachines"], pos)}}}},
+	config = {major = G.deck, align = 'tm', offset = { x = 0.15, y = -1.85 }, bond = 'Weak', colour = G.C.CLEAR}}
     return t
 end
 
@@ -46,15 +134,21 @@ end
 
 -- Call this whenever the condition for having space to gamble would change. Already is called on keys.
 update_gacha_button = function()
-    if G.gacha_button then
-        G.gacha_button:remove()
-        G.gacha_button = UIBox({
-            definition = G.UIDEF.gacha_button(),
-            config = {type = "cm"}
-        })
-        G.gacha_button:recalculate()
-    end
+    --[[if G.gacha_button then
+    local my_menu_uibox = G.gacha_button:get_UIE_by_ID("gacha_button_real")
+    local menu_wrap = my_menu_uibox.parent
+    -- Delete the current menu UIBox:
+    menu_wrap.config.object:remove()
+    -- Create the new menu UIBox:
+    menu_wrap.config.object = UIBox({
+        definition = G.UIDEF.gacha_button_inside(),
+        config = {parent = G.gacha_button, type = "cm"} -- You MUST specify parent!
+    })
+  -- Update the UI:
+  G.gacha_button.UIBox:recalculate()
+    end]]--
 end
+
 -- table of all gacha machines
 hpot_gacha_machines = {
     [1] = {result = function() SMODS.add_card({key = "j_caino"}) end,
@@ -85,4 +179,11 @@ hpot_create_gacha = function()
         definition = G.UIDEF.gacha_machine(machine.image_pos),
         config = {type = "cm"}
     })
+end
+local shoptoggle = G.FUNCS.toggle_shop
+G.FUNCS.toggle_shop = function(e)
+    local ret = shoptoggle(e)
+    G.gacha_button:remove()
+    G.gacha_button = nil
+    return ret
 end

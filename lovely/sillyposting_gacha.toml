@@ -43,9 +43,11 @@ pattern = '''G.shop = nil'''
 payload = '''
 if G.gacha_button then
   G.gacha_button:remove()
+  G.gacha_button = nil
 end
 if G.gacha_machine then
   G.gacha_machine:remove()
+  G.gacha_machine = nil
 end
 '''
 match_indent = true
